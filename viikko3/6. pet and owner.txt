@@ -1,0 +1,39 @@
+tein kokonaan uuden tietokannan kun se oli helpompaa.
+ekaksi tein taulut seuraavalla koodilla:
+CREATE TABLE owner (
+    owner_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    address VARCHAR(255),
+    phone_number VARCHAR(15)
+);
+
+CREATE TABLE pet (
+    pet_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    species VARCHAR(50),
+    owner_id INT,
+    FOREIGN KEY (owner_id) REFERENCES owner(owner_id)
+        ON DELETE CASCADE
+);
+
+Tämän jälkeen lisäilin tietoa tauluihin koodeilla:
+INSERT IGNORE INTO owner (name) VALUES
+('Harold'),
+('Gwen'),
+('Diane'),
+('Benny');
+
+INSERT INTO pet (name, owner_id, species, sex, birth, death) VALUES
+('Fluffy', 1, 'cat', 'f', '1993-02-04', NULL),
+('Claws', 2, 'cat', 'm', '1994-03-17', NULL),
+('Buffy', 1, 'dog','f','1989-05-13', NULL),
+('Fang', 4, 'dog', 'm','1990-08-27', NULL),
+('Bowser',3,'dog','m','1998-08-31', NULL),
+('Chirpy',2,'bird','f','1998-09-11', '2000-09-15'),
+('Whistler', 2,'bird', NULL, '1997-12-09', NULL),
+('Slim', 4, 'snake','m','1996-04-29', NULL);
+
+ja sitten kun halutaan katsoa minkälaisia tauluja ne on niin käytettiin komentoa:
+DESCRIBE owner; 
+DESCRIBE pet;
+
