@@ -1,0 +1,48 @@
+aliohjelman lisäys koodi
+DELIMITER //
+
+CREATE PROCEDURE LisaaOpintosuoritus(
+    IN etunimi VARCHAR(45),
+    IN sukunimi VARCHAR(45),
+    IN kurssikoodi VARCHAR(45),
+    IN arvosana INT
+)
+BEGIN
+    DECLARE opiskelija_id INT;
+    DECLARE kurssi_id INT;
+
+    IF arvosana < 0 OR arvosana > 5 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Virheellinen arvosana! Sen tulee olla välillä 0-5.';
+    END IF;
+
+    SELECT idOpiskelija INTO opiskelija_id
+    FROM opiskelija
+    WHERE Etunimi = etunimi AND Sukunimi = sukunimi
+    LIMIT 1;
+
+    IF opiskelija_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Opiskelijaa ei löytynyt!';
+    END IF;
+
+    SELECT idOpintojakso INTO kurssi_id
+    FROM opintojakso
+    WHERE Koodi = kurssikoodi
+    LIMIT 1;
+
+    IF kurssi_id IS NULL THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Opintojaksoa ei löytynyt!';
+    END IF;
+
+    INSERT INTO arviointi (Paivamaara, Arvosana, idOpiskelija, idOpintojakso)
+    VALUES (CURDATE(), arvosana, opiskelija_id, kurssi_id);
+
+END //
+
+DELIMITER ;
+
+ja tätä kutsutaan koodilla CALL LisaaOpintosuoritus('Mikko','Mallikas','222DYI','3');
+
+testasin itse että se toimii :)
